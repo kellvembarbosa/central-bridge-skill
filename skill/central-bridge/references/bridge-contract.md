@@ -33,7 +33,7 @@ migra os assinantes existentes por §10.6.
 | Variável                     | Significado                                                                                             |
 | ---------------------------- | ------------------------------------------------------------------------------------------------------- |
 | `CENTRAL_BRIDGE_ENABLED`     | `true` liga as rotas. Desligada, toda rota responde 404 `not_found`.                                    |
-| `CENTRAL_BRIDGE_TOKEN`       | Token do produto, gerado na Central (tela do produto → "Gerar token").                                  |
+| `CENTRAL_BRIDGE_TOKEN`       | Token do produto, gerado na Central (tela do produto → "Gerar token", ou MCP `rotate_product_bridge_token`).                                  |
 | `CENTRAL_BRIDGE_PRODUCT`     | Slug do produto na Central. O `/health` devolve este valor; a Central recusa Bridge que responde outro. |
 | `CENTRAL_BRIDGE_ALLOWED_IPS` | IPs da Central separados por vírgula. Vazio = qualquer IP.                                              |
 | `CENTRAL_URL`                | URL base da Central (só para o cliente de faturação, §9).                                               |

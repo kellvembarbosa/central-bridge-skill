@@ -20,13 +20,13 @@ Bridge packages: same source repository, same release flow.
 In the product repository (installs to `.claude/skills/central-bridge`):
 
 ```bash
-npx -y github:kellvembarbosa/central-bridge-skill#v1.0.0 install
+npx -y github:kellvembarbosa/central-bridge-skill#v1.1.0 install
 ```
 
 For every project on this machine (`~/.claude/skills`):
 
 ```bash
-npx -y github:kellvembarbosa/central-bridge-skill#v1.0.0 install --global
+npx -y github:kellvembarbosa/central-bridge-skill#v1.1.0 install --global
 ```
 
 Other agents: `--dir <skills-dir>` (e.g. `--dir .agents/skills` for Codex).
@@ -59,8 +59,10 @@ for those locations). `uninstall` removes only a folder this tool installed.
 ## Use
 
 Ask the agent in the product repository: "connect this project to the Central" /
-"install the Central Bridge" / "sell through the Central checkout". The skill never handles
-secrets: the owner copies the Bridge token from the panel straight into `.env`.
+"install the Central Bridge" / "sell through the Central checkout". The Bridge token comes
+from the panel (copied by the owner) or from the MCP tool `rotate_product_bridge_token`,
+which the agent runs only after the owner confirms and writes straight into the gitignored
+`.env` / deploy secret, never into chat, logs, commits or memory.
 
 ## License
 

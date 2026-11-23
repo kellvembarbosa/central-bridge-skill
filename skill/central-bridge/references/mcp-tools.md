@@ -12,7 +12,8 @@ Writes (✎) need the owner's confirmation with the exact values first.
 | 2 | `list_products`, `get_product` | find the product (Bridge health, capabilities) |
 | 2 | `lookup_store_app` | prefill an app from App Store / Google Play |
 | 2 | ✎ `create_product` | name, type, stack, url, bridgeUrl |
-| 2,7,9 | ✎ `update_product` | stack, url, `bridgeUrl`, `autoInvoice`, `invoiceServiceCode`, `invoiceDescription` (token rotation is panel-only) |
+| 2,7,9 | ✎ `update_product` | stack, url, `bridgeUrl`, `autoInvoice`, `invoiceServiceCode`, `invoiceDescription` |
+| 5,9 | ✎ `rotate_product_bridge_token` | new `CENTRAL_BRIDGE_TOKEN` in plain text, once; the old one stops working at once. Write it only to `.env` / deploy secret |
 | 3 | `get_product_briefing` | the setup Markdown (token masked) |
 | 8 | ✎ `update_product_briefing` | stack + public app keys (RevenueCat SDK key, entitlement, AdMob ids) |
 | 6 | `list_connections`, `get_gateway_event_health` | gateway accounts and webhook health |

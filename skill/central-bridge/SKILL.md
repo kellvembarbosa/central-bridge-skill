@@ -32,15 +32,21 @@ Other references: `references/detect-stack.md` (recognize the project),
 
 ## Hard rules
 
-- **Secrets never pass through you.** The MCP briefing always masks `CENTRAL_BRIDGE_TOKEN`.
-  The owner copies the real token from the panel (Produto → Bridge, or Briefing → "Mostrar com
-  os valores") straight into `.env` / the deploy platform. Never ask for it in chat, never
-  print, log, commit or store it in memory. Confirm `git check-ignore .env` prints `.env`.
+- **Secrets stay out of chat, logs, commits and memory.** The MCP briefing always masks
+  `CENTRAL_BRIDGE_TOKEN`. Two ways to get the real token:
+  - the owner copies it from the panel (Produto → Bridge, or Briefing → "Mostrar com os
+    valores") straight into `.env` / the deploy platform; or
+  - ✎ `rotate_product_bridge_token` returns a **new** token once. Ask first: the previous
+    token stops working immediately, so a live product loses its Central connection until
+    the new value is deployed. Write it straight into the gitignored `.env` (or the deploy
+    platform secret with the owner's tooling) and refer to it only as "the new token".
+  Never ask for it in chat, never print, log, commit or store it in memory. Confirm
+  `git check-ignore .env` prints `.env` before writing it.
 - **The Central owns checkout, prices and access dates.** The product never stores gateway
   keys (no `WOOVI_APP_ID`, `ASAAS_API_KEY`…) and never computes access periods: it stores
   `access_until` from the Central.
 - **Money is integer cents + ISO currency.** Never floats.
-- **Ask before every MCP write** (`create_product`, `update_product`, plans, gateway,
+- **Ask before every MCP write** (`create_product`, `update_product`, `rotate_product_bridge_token`, plans, gateway,
   notices, links, migration with `apply: true`). Show the exact values first; these change
   what real customers are charged. Read-only tools need no confirmation.
 - **Use names exactly** as the briefing/contract spells them (env vars, routes, headers,
@@ -122,7 +128,8 @@ provider/route registration, handlers). Then:
 
 1. Add every env var name to `.env.example` **without value**; real values only in `.env`.
    `CENTRAL_BRIDGE_ENABLED=true`, `CENTRAL_BRIDGE_PRODUCT=<slug>`, `CENTRAL_URL=<central>`,
-   `CENTRAL_BRIDGE_TOKEN=` (owner fills), `CENTRAL_BRIDGE_ALLOWED_IPS=` (optional).
+   `CENTRAL_BRIDGE_TOKEN=` (from the panel or `rotate_product_bridge_token`, see Hard rules),
+   `CENTRAL_BRIDGE_ALLOWED_IPS=` (optional).
 2. Web runtimes (`@central/bridge-web`): token is a server secret (never `PUBLIC_`/`VITE_`/
    `NEXT_PUBLIC_`); writes need an atomic idempotency store (D1 or Upstash Redis, not KV);
    IP allow-list needs a platform IP resolver; rewrites must keep the signed path.
