@@ -1,0 +1,26 @@
+{
+  "name": "@central/bridge-skill",
+  "version": "1.0.0",
+  "description": "Agent skill (Claude Code, Codex…) that connects a product repository to the Central through the Central Bridge: recognize the stack, read the briefing via the Central MCP, choose capabilities, install the Bridge, set up checkout, payment notices and invoicing, verify.",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "central-bridge-skill": "bin/cli.mjs"
+  },
+  "files": [
+    "bin",
+    "skill",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "test": "node --test --test-reporter=spec tests/*.spec.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kellvembarbosa/central-bridge-skill.git"
+  }
+}
