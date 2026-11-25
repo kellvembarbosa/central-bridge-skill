@@ -15,9 +15,17 @@ to the Central only after confirmation.
 ## 2. Gateway account
 
 1. `list_connections` → existing accounts (provider, environment, webhook health).
-2. Pick the account that creates the charges (Woovi for Pix one-off; Asaas for card /
-   recurring). `set_product_checkout_gateway({ productId, gatewayAccountId })`. The tool
-   refuses providers that cannot create charges yet.
+2. Pick the account that creates the charges. `set_product_checkout_gateway({ productId,
+   gatewayAccountId })`; the tool refuses providers that cannot create charges (Paddle,
+   RevenueCat).
+   - **Woovi**: Pix one-off, QR + copy-paste inline (`pix`).
+   - **Asaas**: Pix / card / boleto, one-off or recurring.
+   - **Stripe**: hosted Checkout Session (`checkout_url`, `pix` is null): card, plus Pix or
+     boleto when enabled in the Stripe account; recurring by card. The buyer returns to the
+     product `url`. The owner adds the `checkout.session.*` events to the Stripe webhook
+     endpoint (the gateway screen lists them).
+   A plan can override the product account (e.g. yearly by Pix on Woovi, monthly by card on
+   Stripe).
 3. No suitable account → the owner creates it in the panel (keys are secrets: never through
    you). Use a **sandbox** account while developing.
 
@@ -26,7 +34,7 @@ to the Central only after confirmation.
 Ask for each plan: `slug` (stable, used by the product code), name, price in **cents**,
 optional `original_amount_cents`, badge, features, sort order, `interval` +
 `interval_count` (`lifetime` = forever), `recurring` (needs a gateway with subscriptions,
-e.g. Asaas; Woovi is one-off only), optional per-plan gateway account.
+Asaas or Stripe; Woovi is one-off only), optional per-plan gateway account.
 `list_product_plans` first; then `create_product_plan` / `update_product_plan`.
 
 Product side: read plans with `GET /api/v1/plans` (never hard-code prices), keep plan slugs

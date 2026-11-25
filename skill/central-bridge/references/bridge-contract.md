@@ -228,14 +228,19 @@ só escolhe o plano pelo `slug`.
 Tela do produto → **Checkout e planos**:
 
 - **Conta que cobra (padrão)**: conta de gateway da Central que cria as
-  cobranças (hoje Woovi e Asaas; qualquer conector com `createCharge` entra).
+  cobranças (hoje Woovi, Asaas e Stripe; qualquer conector com `createCharge` entra).
+  Na Stripe a cobrança é uma Checkout Session hospedada (`checkout_url`, sem
+  `pix` inline): o comprador paga na página da Stripe (cartão, Pix ou boleto,
+  conforme ativos na conta) e volta para a URL do produto. Cadastre no
+  endpoint da Stripe os eventos `checkout.session.*` além dos de cobrança e
+  assinatura.
 - **Planos**: slug, nome, preço em centavos (com preço riscado opcional),
   selo, benefícios, ordem, à venda ou não, e **gateway próprio** opcional
   (ex.: Pix avulso na Woovi e assinatura no cartão pelo Asaas).
 - `interval` + `interval_count` = quanto tempo **um pagamento** libera
   (`day`/`week`/`month`/`year`; `lifetime` = para sempre). `recurring: true` =
   o gateway cobra de novo a cada período (precisa de gateway com assinatura,
-  ex. Asaas; a Woovi só faz avulso).
+  ex. Asaas ou Stripe no cartão; a Woovi só faz avulso).
 
 O mesmo pode ser feito pelo MCP (`create_product_plan`,
 `set_product_checkout_gateway`, `list_checkout_payments`…).
