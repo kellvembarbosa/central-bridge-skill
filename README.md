@@ -20,13 +20,13 @@ Bridge packages: same source repository, same release flow.
 In the product repository (installs to `.claude/skills/central-bridge`):
 
 ```bash
-npx -y github:kellvembarbosa/central-bridge-skill#v1.3.0 install
+npx -y github:kellvembarbosa/central-bridge-skill#v1.3.1 install
 ```
 
 For every project on this machine (`~/.claude/skills`):
 
 ```bash
-npx -y github:kellvembarbosa/central-bridge-skill#v1.3.0 install --global
+npx -y github:kellvembarbosa/central-bridge-skill#v1.3.1 install --global
 ```
 
 Other agents: `--dir <skills-dir>` (e.g. `--dir .agents/skills` for Codex).

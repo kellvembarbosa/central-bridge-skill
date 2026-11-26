@@ -327,8 +327,9 @@ A Central calcula até quando cada pagamento libera acesso; o produto só grava
 a data (`null` = vitalício ou ainda não pago).
 
 - **Plano avulso**: `paid_at` + `interval × interval_count`. Se o usuário
-  (`product_user_ref`) ainda tem período em curso **do mesmo plano** (também
-  um importado por §10.6), o novo período começa no fim dele.
+  (`product_user_ref`) ainda tem período pago em curso **de qualquer plano** do
+  produto (também um importado por §10.6), o novo período começa no fim dele:
+  trocar de plano (Pix → cartão, mensal → anual) não perde os dias restantes.
 - **Plano recorrente**: o período do gateway, quando ele já passou da cobrança;
   senão vencimento da cobrança + período do plano (o webhook de pagamento do
   Asaas chega sem a assinatura atualizada).
@@ -349,7 +350,7 @@ A Central lê `GET subscriptions` da Bridge (§7) e, para cada assinatura
 | Caso                                                                            | O que acontece                                                                                                                                                                  |
 | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `provider_subscription_id` existe no livro-razão (mesmo `provider`)             | **Adotada**: a assinatura passa a ser do produto e do `user_ref`; cada cobrança paga depois da migração vira `subscription.renewed` e o cancelamento vira `subscription.ended`. |
-| `provider_subscription_id` nulo e `current_period_end` futuro                   | **Importada**: período avulso já pago; o próximo pagamento do mesmo plano pela Central soma a ele. Exige a conta que cobra configurada.                                         |
+| `provider_subscription_id` nulo e `current_period_end` futuro                   | **Importada**: período avulso já pago; o próximo pagamento avulso pela Central (de qualquer plano) soma a ele. Exige a conta que cobra configurada.                             |
 | Assinatura de gateway fora do livro-razão, de outro produto, ou sem data de fim | Ignorada, com o motivo na prévia.                                                                                                                                               |
 
 - `plan` deve ser o **slug do plano na Central**; a prévia lista os que não
