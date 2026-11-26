@@ -5,18 +5,18 @@ to the Central only after confirmation.
 
 ## 1. How does this product get paid?
 
-| Situation | Path |
-|---|---|
-| New product, sells plans/access | **Central checkout** (below). Recommended. |
-| Already sells with its own gateway code | Central checkout + **migration** (§5); remove gateway keys from the product only after the owner confirms the cut-over. |
-| Mobile app with in-app purchases | RevenueCat (briefing app section) + `create_gateway_link` `match_app_id`. No checkout. |
-| Charges created by the product in a gateway account shared with other products | Keep, but implement `payment_owner` and link with `ask_product`. |
+| Situation                                                                      | Path                                                                                                                    |
+| ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| New product, sells plans/access                                                | **Central checkout** (below). Recommended.                                                                              |
+| Already sells with its own gateway code                                        | Central checkout + **migration** (§5); remove gateway keys from the product only after the owner confirms the cut-over. |
+| Mobile app with in-app purchases                                               | RevenueCat (briefing app section) + `create_gateway_link` `match_app_id`. No checkout.                                  |
+| Charges created by the product in a gateway account shared with other products | Keep, but implement `payment_owner` and link with `ask_product`.                                                        |
 
 ## 2. Gateway account
 
 1. `list_connections` → existing accounts (provider, environment, webhook health).
 2. Pick the account that creates the charges. `set_product_checkout_gateway({ productId,
-   gatewayAccountId })`; the tool refuses providers that cannot create charges (Paddle,
+gatewayAccountId })`; the tool refuses providers that cannot create charges (Paddle,
    RevenueCat).
    - **Woovi**: Pix one-off, QR + copy-paste inline (`pix`).
    - **Asaas**: Pix / card / boleto, one-off or recurring.
@@ -24,20 +24,21 @@ to the Central only after confirmation.
      boleto when enabled in the Stripe account; recurring by card. The buyer returns to the
      product `url`. The owner adds the `checkout.session.*` events to the Stripe webhook
      endpoint (the gateway screen lists them).
-   A plan can override the product account (e.g. yearly by Pix on Woovi, monthly by card on
-   Stripe).
+     A plan can override the product account (e.g. yearly by Pix on Woovi, monthly by card on
+     Stripe).
 3. No suitable account → the owner creates it in the panel (keys are secrets: never through
    you). Use a **sandbox** account while developing.
 
 ## 3. Plans
 
 Ask for each plan: `slug` (stable, used by the product code), name, price in **cents**,
-optional `original_amount_cents`, badge, features, sort order, `interval` +
+`currency` (`BRL` default, `USD` or `EUR`; USD/EUR only on a gateway that charges in it,
+today Stripe; Woovi/Asaas and Pix are BRL only), optional `original_amount_cents`, badge, features, sort order, `interval` +
 `interval_count` (`lifetime` = forever), `recurring` (needs a gateway with subscriptions,
 Asaas or Stripe; Woovi is one-off only), optional per-plan gateway account.
 `list_product_plans` first; then `create_product_plan` / `update_product_plan`.
 
-Product side: read plans with `GET /api/v1/plans` (never hard-code prices), keep plan slugs
+Product side: read plans with `GET /api/v1/plans` (never hard-code prices; format each price by its plan `currency`, never a fixed `R$`), keep plan slugs
 in code only as identifiers.
 
 ## 4. Charge flow in the product

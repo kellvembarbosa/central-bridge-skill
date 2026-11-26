@@ -30,13 +30,13 @@ migra os assinantes existentes por §10.6.
 
 ## 1. Configuração no produto
 
-| Variável                     | Significado                                                                                             |
-| ---------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `CENTRAL_BRIDGE_ENABLED`     | `true` liga as rotas. Desligada, toda rota responde 404 `not_found`.                                    |
-| `CENTRAL_BRIDGE_TOKEN`       | Token do produto, gerado na Central (tela do produto → "Gerar token", ou MCP `rotate_product_bridge_token`).                                  |
-| `CENTRAL_BRIDGE_PRODUCT`     | Slug do produto na Central. O `/health` devolve este valor; a Central recusa Bridge que responde outro. |
-| `CENTRAL_BRIDGE_ALLOWED_IPS` | IPs da Central separados por vírgula. Vazio = qualquer IP.                                              |
-| `CENTRAL_URL`                | URL base da Central (só para o cliente de faturação, §9).                                               |
+| Variável                     | Significado                                                                                                  |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `CENTRAL_BRIDGE_ENABLED`     | `true` liga as rotas. Desligada, toda rota responde 404 `not_found`.                                         |
+| `CENTRAL_BRIDGE_TOKEN`       | Token do produto, gerado na Central (tela do produto → "Gerar token", ou MCP `rotate_product_bridge_token`). |
+| `CENTRAL_BRIDGE_PRODUCT`     | Slug do produto na Central. O `/health` devolve este valor; a Central recusa Bridge que responde outro.      |
+| `CENTRAL_BRIDGE_ALLOWED_IPS` | IPs da Central separados por vírgula. Vazio = qualquer IP.                                                   |
+| `CENTRAL_URL`                | URL base da Central (só para o cliente de faturação, §9).                                                    |
 
 Constantes: prefixo `central-api/v1`, tolerância de relógio **300 s**,
 idempotência guardada por **24 h**, página com **25** itens.
@@ -273,7 +273,7 @@ true`); outro corpo → 409 `idempotency_conflict`.
 ```
 Plan          {slug, name, description, interval: "day"|"week"|"month"|"year"|"lifetime",
                interval_count, recurring, amount_cents, original_amount_cents|null,
-               currency: "BRL", badge|null, features: string[], sort_order}
+               currency: "BRL"|"USD"|"EUR", badge|null, features: string[], sort_order}
 PaymentRecord {id (uuid), status: "pending"|"paid"|"expired"|"refunded"|"failed",
                plan: {slug, name, interval, interval_count, recurring},
                amount_cents, refunded_cents, currency, method: "pix"|"card"|"boleto"|"other",
@@ -285,6 +285,10 @@ PaymentRecord {id (uuid), status: "pending"|"paid"|"expired"|"refunded"|"failed"
 PaymentEvent  {id: "evt_…", type, occurred_at, payment: PaymentRecord,
                subscription: {status, current_period_end|null}|null}
 ```
+
+`currency` do plano é a moeda da cobrança (`PaymentRecord.currency` igual).
+`USD`/`EUR` só com gateway que cobra nela (Stripe); Woovi e Asaas cobram só
+`BRL`, e Pix só existe em `BRL`. O produto formata o preço pela moeda.
 
 `type`: `payment.paid` (grave o acesso até `payment.access_until`),
 `payment.refunded` (estorno total ou chargeback: revogue), `payment.expired`
