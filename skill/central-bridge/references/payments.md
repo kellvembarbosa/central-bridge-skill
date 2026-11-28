@@ -26,7 +26,7 @@ gatewayAccountId })`; the tool refuses providers that cannot create charges (Pad
      endpoint (the gateway screen lists them).
      A plan can override the product account (e.g. yearly by Pix on Woovi, monthly by card on
      Stripe).
-3. No suitable account → the owner creates it in the panel (keys are secrets: never through
+3. No suitable account → the owner creates it in the Central app (keys are secrets: never through
    you). Use a **sandbox** account while developing.
 
 ## 3. Plans

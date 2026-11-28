@@ -14,7 +14,7 @@ Writes (✎) need the owner's confirmation with the exact values first.
 | 2 | ✎ `create_product` | name, type, stack, url, bridgeUrl |
 | 2,7,9 | ✎ `update_product` | stack, url, `bridgeUrl`, `autoInvoice`, `invoiceServiceCode`, `invoiceDescription` |
 | 5,9 | ✎ `rotate_product_bridge_token` | new `CENTRAL_BRIDGE_TOKEN` in plain text, once; the old one stops working at once. Write it only to `.env` / deploy secret |
-| 3 | `get_product_briefing` | the setup Markdown (token masked) |
+| 3 | `get_product_briefing` | the setup Markdown (token masked; never pass `reveal: true`, that is for the owner in the app) |
 | 8 | ✎ `update_product_briefing` | stack + public app keys (RevenueCat SDK key, entitlement, AdMob ids) |
 | 6 | `list_connections`, `get_gateway_event_health` | gateway accounts and webhook health |
 | 6 | ✎ `create_gateway_link`, `delete_gateway_link` | attribute an account's charges to the product (`exclusive`, `ask_product`, `match_app_id`, `match_price`) |

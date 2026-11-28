@@ -5,7 +5,7 @@ description: Connect a product repository to the Central (gestão panel) through
 
 # Central Bridge
 
-The **Central** is the owner's management panel (sales, subscriptions, NFS-e, revenue,
+The **Central** is the owner's management backend (sales, subscriptions, NFS-e, revenue,
 alerts for every product). The **Bridge** is a small HMAC-signed API each product exposes at
 `/central-api/v1` so the Central can ask the product questions (who owns this payment? list
 users, change plan, deliver an invoice, payment events…). The Central never writes to the
@@ -34,8 +34,10 @@ Other references: `references/detect-stack.md` (recognize the project),
 
 - **Secrets stay out of chat, logs, commits and memory.** The MCP briefing always masks
   `CENTRAL_BRIDGE_TOKEN`. Two ways to get the real token:
-  - the owner copies it from the panel (Produto → Bridge, or Briefing → "Mostrar com os
-    valores") straight into `.env` / the deploy platform; or
+  - the owner copies it from the Central app (Produto → Bridge, or the briefing shown with
+    its values) straight into `.env` / the deploy platform; there is no web panel any more.
+    You never call `get_product_briefing` with `reveal: true`: it puts the token in your
+    context; or
   - ✎ `rotate_product_bridge_token` returns a **new** token once. Ask first: the previous
     token stops working immediately, so a live product loses its Central connection until
     the new value is deployed. Write it straight into the gitignored `.env` (or the deploy
@@ -128,7 +130,7 @@ provider/route registration, handlers). Then:
 
 1. Add every env var name to `.env.example` **without value**; real values only in `.env`.
    `CENTRAL_BRIDGE_ENABLED=true`, `CENTRAL_BRIDGE_PRODUCT=<slug>`, `CENTRAL_URL=<central>`,
-   `CENTRAL_BRIDGE_TOKEN=` (from the panel or `rotate_product_bridge_token`, see Hard rules),
+   `CENTRAL_BRIDGE_TOKEN=` (from the Central app or `rotate_product_bridge_token`, see Hard rules),
    `CENTRAL_BRIDGE_ALLOWED_IPS=` (optional).
 2. Web runtimes (`@central/bridge-web`): token is a server secret (never `PUBLIC_`/`VITE_`/
    `NEXT_PUBLIC_`); writes need an atomic idempotency store (D1 or Upstash Redis, not KV);
